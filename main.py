@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import init_db
 from app.modules.categoria.router import router as categorias_router
 from app.modules.ingredientes.router import router as ingredientes_router
@@ -10,6 +11,14 @@ app = FastAPI(
     description="API del parcial de Programación 4 — Catálogo de productos",
     version="1.0.0",
     redirect_slashes=False,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Inicializar base de datos
