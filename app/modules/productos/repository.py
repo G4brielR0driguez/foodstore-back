@@ -10,6 +10,12 @@ class ProductoRepository(BaseRepository[Producto]):
     def __init__(self, session: Session):
         super().__init__(Producto, session)
 
+    def get_by_id(self, id: int) -> Optional[Producto]:
+        """Retorna el producto solo si está activo."""
+        return self.session.exec(
+            select(Producto).where(Producto.id == id, Producto.activo == True)
+        ).first()
+
     def get_filtered(
         self,
         nombre: Optional[str] = None,
@@ -19,7 +25,7 @@ class ProductoRepository(BaseRepository[Producto]):
         skip: int = 0,
         limit: int = 20,
     ) -> List[Producto]:
-        query = select(Producto)
+        query = select(Producto).where(Producto.activo == True)
         if nombre:
             query = query.where(Producto.nombre.ilike(f"%{nombre}%"))
         if disponible is not None:
@@ -40,3 +46,8 @@ class ProductoRepository(BaseRepository[Producto]):
         return self.session.exec(
             select(ProductoIngrediente).where(ProductoIngrediente.producto_id == producto_id)
         ).all()
+
+    def soft_delete(self, obj: Producto) -> None:
+        """Borrado lógico: marca activo=False en lugar de eliminar el registro."""
+        obj.activo = False
+        self.session.add(obj)

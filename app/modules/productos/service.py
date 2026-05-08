@@ -65,6 +65,7 @@ def crear_producto(uow: ProductoUnitOfWork, datos: ProductoCreate) -> Producto:
         ))
 
     uow.session.flush()
+    uow.commit()
     uow.session.refresh(producto)
     return producto
 
@@ -111,6 +112,7 @@ def actualizar_producto(
 
     uow.session.add(producto)
     uow.session.flush()
+    uow.commit()
     uow.session.refresh(producto)
     return producto
 
@@ -119,4 +121,5 @@ def eliminar_producto(uow: ProductoUnitOfWork, producto_id: int) -> None:
     producto = uow.productos.get_by_id(producto_id)
     if not producto:
         raise HTTPException(status_code=404, detail=f"Producto con id={producto_id} no encontrado")
-    uow.productos.delete(producto)
+    uow.productos.soft_delete(producto)
+    uow.commit()

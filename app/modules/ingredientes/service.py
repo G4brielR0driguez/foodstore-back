@@ -27,7 +27,10 @@ def crear_ingrediente(uow: IngredienteUnitOfWork, datos: IngredienteCreate) -> I
     if uow.ingredientes.get_by_nombre(datos.nombre):
         raise HTTPException(status_code=400, detail=f"Ya existe un ingrediente con el nombre '{datos.nombre}'")
     ingrediente = Ingrediente(**datos.model_dump())
-    return uow.ingredientes.add(ingrediente)
+    uow.ingredientes.add(ingrediente)
+    uow.commit()
+    uow.session.refresh(ingrediente)
+    return ingrediente
 
 
 def actualizar_ingrediente(
@@ -48,6 +51,7 @@ def actualizar_ingrediente(
 
     uow.session.add(ing)
     uow.session.flush()
+    uow.commit()
     uow.session.refresh(ing)
     return ing
 
@@ -56,4 +60,5 @@ def eliminar_ingrediente(uow: IngredienteUnitOfWork, ingrediente_id: int) -> Non
     ing = uow.ingredientes.get_by_id(ingrediente_id)
     if not ing:
         raise HTTPException(status_code=404, detail=f"Ingrediente con id={ingrediente_id} no encontrado")
-    uow.ingredientes.delete(ing)
+    uow.ingredientes.soft_delete(ing)
+    uow.commit()

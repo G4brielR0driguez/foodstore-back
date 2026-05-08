@@ -19,6 +19,7 @@ class Producto(SQLModel, table=True):
     imagenes_url: List[str] = Field(default_factory=list, sa_column=Column(ARRAY(String)))
     stock_cantidad: int = Field(default=0, ge=0)
     disponible: bool = Field(default=True)
+    activo: bool = Field(default=True)
 
     categorias: List[Categoria] = Relationship(link_model=ProductoCategoria)
     ingredientes: List[Ingrediente] = Relationship(link_model=ProductoIngrediente)

@@ -39,10 +39,7 @@ def crear_ingrediente(
     datos: IngredienteCreate,
     uow: IngredienteUnitOfWork = Depends(get_uow),
 ):
-    ing = service.crear_ingrediente(uow, datos)
-    uow.commit()
-    uow.session.refresh(ing)
-    return ing
+    return service.crear_ingrediente(uow, datos)
 
 
 @router.patch("/{ingrediente_id}", response_model=IngredienteRead, summary="Actualizar ingrediente")
@@ -51,10 +48,7 @@ def actualizar_ingrediente(
     datos: IngredienteUpdate,
     uow: IngredienteUnitOfWork = Depends(get_uow),
 ):
-    ing = service.actualizar_ingrediente(uow, ingrediente_id, datos)
-    uow.commit()
-    uow.session.refresh(ing)
-    return ing
+    return service.actualizar_ingrediente(uow, ingrediente_id, datos)
 
 
 @router.delete("/{ingrediente_id}", status_code=204, summary="Eliminar ingrediente")
@@ -63,4 +57,3 @@ def eliminar_ingrediente(
     uow: IngredienteUnitOfWork = Depends(get_uow),
 ):
     service.eliminar_ingrediente(uow, ingrediente_id)
-    uow.commit()

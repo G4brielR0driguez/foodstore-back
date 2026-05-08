@@ -8,3 +8,4 @@ class Ingrediente(SQLModel, table=True):
     nombre: str = Field(unique=True, max_length=100)
     descripcion: Optional[str] = None
     es_alergeno: bool = Field(default=False)
+    activo: bool = Field(default=True)

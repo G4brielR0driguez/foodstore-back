@@ -30,7 +30,10 @@ def crear_categoria(uow: CategoriaUnitOfWork, datos: CategoriaCreate) -> Categor
         raise HTTPException(status_code=404, detail=f"Categoría padre con id={datos.parent_id} no encontrada")
 
     categoria = Categoria(**datos.model_dump())
-    return uow.categorias.add(categoria)
+    uow.categorias.add(categoria)
+    uow.commit()
+    uow.session.refresh(categoria)
+    return categoria
 
 
 def actualizar_categoria(
@@ -57,6 +60,7 @@ def actualizar_categoria(
 
     uow.session.add(cat)
     uow.session.flush()
+    uow.commit()
     uow.session.refresh(cat)
     return cat
 
@@ -65,4 +69,5 @@ def eliminar_categoria(uow: CategoriaUnitOfWork, categoria_id: int) -> None:
     cat = uow.categorias.get_by_id(categoria_id)
     if not cat:
         raise HTTPException(status_code=404, detail=f"Categoría con id={categoria_id} no encontrada")
-    uow.categorias.delete(cat)
+    uow.categorias.soft_delete(cat)
+    uow.commit()

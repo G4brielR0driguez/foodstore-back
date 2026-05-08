@@ -40,10 +40,7 @@ def crear_categoria(
     datos: CategoriaCreate,
     uow: CategoriaUnitOfWork = Depends(get_uow),
 ):
-    categoria = service.crear_categoria(uow, datos)
-    uow.commit()
-    uow.session.refresh(categoria)
-    return categoria
+    return service.crear_categoria(uow, datos)
 
 
 @router.patch("/{categoria_id}", response_model=CategoriaRead, summary="Actualizar categoría")
@@ -52,10 +49,7 @@ def actualizar_categoria(
     datos: CategoriaUpdate,
     uow: CategoriaUnitOfWork = Depends(get_uow),
 ):
-    categoria = service.actualizar_categoria(uow, categoria_id, datos)
-    uow.commit()
-    uow.session.refresh(categoria)
-    return categoria
+    return service.actualizar_categoria(uow, categoria_id, datos)
 
 
 @router.delete("/{categoria_id}", status_code=204, summary="Eliminar categoría")
@@ -64,4 +58,3 @@ def eliminar_categoria(
     uow: CategoriaUnitOfWork = Depends(get_uow),
 ):
     service.eliminar_categoria(uow, categoria_id)
-    uow.commit()

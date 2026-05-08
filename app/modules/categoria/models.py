@@ -9,3 +9,4 @@ class Categoria(SQLModel, table=True):
     nombre: str = Field(unique=True, max_length=100)
     descripcion: Optional[str] = None
     imagen_url: Optional[str] = None
+    activo: bool = Field(default=True)

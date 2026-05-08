@@ -45,10 +45,7 @@ def crear_producto(
     datos: ProductoCreate,
     uow: ProductoUnitOfWork = Depends(get_uow),
 ):
-    producto = service.crear_producto(uow, datos)
-    uow.commit()
-    uow.session.refresh(producto)
-    return producto
+    return service.crear_producto(uow, datos)
 
 
 @router.patch("/{producto_id}", response_model=ProductoRead, summary="Actualizar producto")
@@ -57,10 +54,7 @@ def actualizar_producto(
     datos: ProductoUpdate,
     uow: ProductoUnitOfWork = Depends(get_uow),
 ):
-    producto = service.actualizar_producto(uow, producto_id, datos)
-    uow.commit()
-    uow.session.refresh(producto)
-    return producto
+    return service.actualizar_producto(uow, producto_id, datos)
 
 
 @router.delete("/{producto_id}", status_code=204, summary="Eliminar producto")
@@ -69,4 +63,3 @@ def eliminar_producto(
     uow: ProductoUnitOfWork = Depends(get_uow),
 ):
     service.eliminar_producto(uow, producto_id)
-    uow.commit()
